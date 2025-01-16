@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolume  # Déclaration d'un volume persistant
+metadata:
+  name: sinistre-pv  # Nom du volume persistant
+spec:
+  capacity:             # Spécifie la capacité
+    storage: 10Gi      # Capacité de stockage de 10 Go
+  accessModes:         # Modes d'accès autorisés
+    - ReadWriteOnce     # Le volume peut être monté en écriture par un seul nœud
+  hostPath:            # Chemin sur le système de fichiers de l'hôte
+    path: /mnt/data/sinistre  # Chemin spécifique sur l'hôte pour le stockage
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim  # Demande de volume persistant
+metadata:
+  name: sinistre-pvc  # Nom de la demande de volume
+spec:
+  accessModes:         # Modes d'accès souhaités
+    - ReadWriteOnce    # Demande d'accès en écriture par un seul nœud
+  resources:
+    requests:          # Ressources demandées
+      storage: 10Gi   # Demande de 10 Go de stockage
