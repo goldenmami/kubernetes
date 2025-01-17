@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap  # Déclaration d'un ConfigMap pour stocker des données de configuration
+metadata:
+  name: sinistre-config  # Nom du ConfigMap
+data:
+  DATABASE_URL: "postgresql://user:password@postgres:5432/sinistre"  # URL de connexion à la base de données
+  APP_ENV: "production"  # Environnement d'exécution de l'application

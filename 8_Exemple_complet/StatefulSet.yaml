@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet  # Déclaration d'un StatefulSet pour gérer les instances de l'application avec un état
+metadata:
+  name: sinistre-app  # Nom du StatefulSet
+spec:
+  serviceName: "sinistre"  # Nom du service associé
+  replicas: 3  # Nombre de répliques de l'application à créer
+  selector:
+    matchLabels:
+      app: sinistre  # Sélecteur d'étiquette pour identifier les pods gérés par ce StatefulSet
+  template:  # Modèle pour les pods créés par le StatefulSet
+    metadata:
+      labels:
+        app: sinistre  # Étiquette pour les pods
+    spec:
+      containers:  # Configuration des conteneurs à déployer dans les pods
+      - name: sinistre-container
+        image: directassurance/sinistre:latest  # Image Docker à utiliser
+        ports:
+        - containerPort: 8080  # Port exposé par le conteneur
+        env:  # Variables d'environnement à injecter dans le conteneur
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: sinistre-config  # Référence à la clé du ConfigMap pour l'URL de la base de données
+              key: DATABASE_URL
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sinistre-secret  # Référence à la clé du Secret pour le mot de passe de la base de données
+              key: DB_PASSWORD
+        volumeMounts:  # Montage des volumes dans les conteneurs
+        - name: sinistre-storage
+          mountPath: /data  # Chemin dans le conteneur où le volume sera monté
+      volumes:  # Déclaration des volumes à monter dans les pods
+      - name: sinistre-storage
+        persistentVolumeClaim:
+          claimName: sinistre-pvc  # Nom de la PVC à utiliser

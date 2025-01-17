@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service  # Déclaration d'un Service pour exposer l'application
+metadata:
+  name: sinistre  # Nom du Service
+spec:
+  selector:
+    app: sinistre  # Sélecteur qui relie le Service aux pods de l'application
+  ports:
+  - protocol: TCP
+    port: 80  # Port exposé par le Service
+    targetPort: 8080  # Port du conteneur auquel le Service redirige
+  type: ClusterIP  # Type de Service, accessible uniquement à l'intérieur du cluster

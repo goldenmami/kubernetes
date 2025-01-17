@@ -1,0 +1,28 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler  # Déclaration d'un HPA pour le scaling automatique
+metadata:
+  name: sinistre-hpa  # Nom du HPA
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet  # Type d'objet à mettre à l'échelle
+    name: sinistre-app  # Nom du StatefulSet à mettre à l'échelle
+  minReplicas: 3  # Nombre minimum de répliques à maintenir
+  maxReplicas: 10  # Nombre maximum de répliques à autoriser
+  metrics:  # Métriques à surveiller pour ajuster le scaling
+  - type: Resource
+    resource:
+      name: cpu  # Type de ressource à surveiller
+      target:
+        type: Utilization
+        averageUtilization: 80  # Objectif d'utilisation du CPU (80 %)
+
+  affinity:  # Déclaration des règles d'affinité pour le scheduling
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:  # Termes de sélection pour les nœuds
+        - matchExpressions:
+          - key: tier  # Clé à tester
+            operator: In  # Opérateur de correspondance
+            values:
+            - frontend  # Valeur requise pour correspondre
